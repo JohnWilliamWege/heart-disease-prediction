@@ -2,13 +2,18 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
+import os
+
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
 
 def app():
     # Load the model, encoders, and min-max values
-    best_model_filename = "C:/Users/jwweg/PycharmProjects/heart_disease_app/utilities/best_model_logistic_regression.pkl"
+    best_model_filename = os.path.join(current_dir, 'utilities', 'best_model_logistic_regression.pkl')
     best_model = joblib.load(best_model_filename)
-    label_encoders = joblib.load("C:/Users/jwweg/PycharmProjects/heart_disease_app/utilities/label_encoders.pkl")
-    min_max_values = pd.read_csv("C:/Users/jwweg/PycharmProjects/heart_disease_app/utilities/min_max_values.csv",
+    label_encoders = joblib.load(os.path.join(current_dir, 'utilities', 'label_encoders.pkl'))
+    min_max_values = pd.read_csv(os.path.join(current_dir, 'utilities', 'min_max_values.csv'),
                                  index_col=0)
 
     # Define dictionaries for human-readable labels

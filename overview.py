@@ -3,7 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import sqlite3
+import os
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 def app():
     st.title("Patient Data Overview")
 
@@ -28,7 +30,7 @@ def app():
         plt.ylabel('Average Heart Disease Occurrence (1 = Yes, 0 = No)')
         st.pyplot(plt)
 
-    db_path = 'C:/Users/jwweg/PycharmProjects/heart_disease_app/patients.db'
+    db_path = os.path.join(current_dir, 'patients.db')
     data = load_data(db_path)
     st.write("### Patient Data", data)
 
