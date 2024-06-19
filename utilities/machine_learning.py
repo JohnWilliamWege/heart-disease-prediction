@@ -46,7 +46,7 @@ def load_and_preprocess_data(db_path):
     numeric_features = x.select_dtypes(include=[np.number]).columns
 
     # Perform train/test splitting
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=40)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=39)
 
     # Normalize the training and testing data using MinMaxScaler
     scaler = MinMaxScaler()
