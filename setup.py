@@ -22,13 +22,13 @@ def load_csv_to_db(csv_file, db_file):
         df = pd.read_csv(csv_file, delimiter=';')
         print("CSV file loaded successfully.")
 
-        # Create a connection to the SQLite database
+        # set up a connection to the SQLite database
         conn = create_connection(db_file)
         if conn is None:
             raise Exception("Error! cannot create the database connection.")
         print("Database connection created successfully.")
 
-        # Create the table if not exists
+        # create the table if not exists
         create_table(conn)
 
         # Check if data already exists
@@ -39,7 +39,7 @@ def load_csv_to_db(csv_file, db_file):
         else:
             print("Data already exists in the database. No new data was added.")
 
-        # Close the connection
+
         close_connection(conn)
 
     except Exception as e:

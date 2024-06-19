@@ -2,12 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 import sqlite3
 import joblib
-import os
 
 def save_label_encoders(label_encoders, file_path):
     with open(file_path, 'wb') as file:
@@ -17,10 +16,7 @@ def load_label_encoders(file_path):
     with open(file_path, 'rb') as file:
         return joblib.load(file)
 
-def save_min_max_values(x_train, file_path):
-    min_values = x_train.min()
-    max_values = x_train.max()
-    min_max_values = pd.DataFrame({"min": min_values, "max": max_values})
+def save_min_max_values(min_max_values, file_path):
     min_max_values.to_csv(file_path)
 
 def load_and_preprocess_data(db_path):
@@ -46,20 +42,16 @@ def load_and_preprocess_data(db_path):
     x = myData.drop('target', axis=1)
     y = myData['target']
 
+    # Identify numeric features
+    numeric_features = x.select_dtypes(include=[np.number]).columns
+
     # Perform train/test splitting
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=40)
 
-    # Save min and max values using only the training set
-    numeric_features = x_train.select_dtypes(include=[np.number]).columns
-    min_max_values = pd.DataFrame({"min": x_train[numeric_features].min(), "max": x_train[numeric_features].max()})
-    min_max_values.to_csv("min_max_values.csv")
-
-    # Normalize the training and testing data using the saved min and max values
-    for feature in numeric_features:
-        x_train[feature] = (x_train[feature] - min_max_values.loc[feature, 'min']) / (
-                min_max_values.loc[feature, 'max'] - min_max_values.loc[feature, 'min'])
-        x_test[feature] = (x_test[feature] - min_max_values.loc[feature, 'min']) / (
-                min_max_values.loc[feature, 'max'] - min_max_values.loc[feature, 'min'])
+    # Normalize the training and testing data using MinMaxScaler
+    scaler = MinMaxScaler()
+    x_train[numeric_features] = scaler.fit_transform(x_train[numeric_features])
+    x_test[numeric_features] = scaler.transform(x_test[numeric_features])
 
     return x_train, x_test, y_train, y_test
 

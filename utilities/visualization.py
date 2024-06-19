@@ -6,17 +6,16 @@ import sqlite3
 # Connect to the SQLite database
 conn = sqlite3.connect('C:/Users/jwweg/PycharmProjects/heart_disease_app/patients.db')
 
-# Query the data from the relevant table, assuming the table name is 'heart'
+# Query for data
 query = "SELECT * FROM patients"
 data = pd.read_sql_query(query, conn)
 
-# Close the connection
 conn.close()
 
-# List of numeric variables
+# List of the  numerical variables
 numeric_vars = ['age', 'resting_blood_pressure', 'cholesterol', 'max_heart_rate_achieved', 'st_depression']
 
-# List of categorical variables
+# List of the categorical variables
 categorical_vars = ['sex', 'chest_pain_type', 'fasting_blood_sugar', 'rest_ecg', 'exercise_induced_angina', 'st_slope', 'num_major_vessels', 'thalassemia']
 
 # Set up the matplotlib figure for numeric variables
@@ -35,16 +34,17 @@ for i, var in enumerate(numeric_vars):
     axes[i].axvline(mean_heart_disease, color='orange', linestyle='dashed', linewidth=2, label='Heart Disease Avg')
     axes[i].legend(title='Target')
 
-# Remove the empty subplot for numeric variables
-fig.delaxes(axes[-1])
+# Remove the empty subplot if necessary
+if len(numeric_vars) < len(axes):
+    fig.delaxes(axes[len(numeric_vars)])
 
 # Adjust the spacing between the plots for numeric variables
-fig.subplots_adjust(hspace=0.6, wspace=0.6)
+fig.subplots_adjust(hspace=0.5, wspace=0.4)
 plt.tight_layout()
 plt.show()
 
-# Set up the matplotlib figure for categorical variables
-fig, axes = plt.subplots(nrows=4, ncols=2, figsize=(15, 20))
+# Set up figure for categorical variables using matplotlib library
+fig, axes = plt.subplots(nrows=4, ncols=2, figsize=(12, 16))
 axes = axes.flatten()
 
 # Plot each categorical variable
@@ -53,11 +53,11 @@ for i, var in enumerate(categorical_vars):
     axes[i].set_title(f'Distribution of {var} by Target')
     axes[i].legend(title='Target')
 
-# Remove the empty subplot for categorical variables if the number of categorical variables is odd
-if len(categorical_vars) % 2 != 0:
-    fig.delaxes(axes[-1])
+# Remove the empty subplot for categorical variables if necessary
+if len(categorical_vars) < len(axes):
+    fig.delaxes(axes[len(categorical_vars)])
 
-# Adjust the spacing between the plots for categorical variables
-fig.subplots_adjust(hspace=0.6, wspace=0.6)
+# Adjust the spacing
+fig.subplots_adjust(hspace=1, wspace=0.4)
 plt.tight_layout()
 plt.show()

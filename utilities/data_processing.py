@@ -1,9 +1,6 @@
-
-
 import pandas as pd
 import sqlite3
 
-# Connect to the SQLite database
 conn = sqlite3.connect('C:/Users/jwweg/PycharmProjects/heart_disease_app/patients.db')
 
 
@@ -53,11 +50,11 @@ pdf['thalassemia'] = pdf['thalassemia'].map({
 
 })
 
-# Display the first few rows to verify the changes
+# Display the first few
 print(pdf.head())
 
-# Update the database with the processed data
+# Update the database
 pdf.to_sql('patients', conn, if_exists='replace', index=False)
 
-# Close the connection
+# Close connection
 conn.close()

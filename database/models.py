@@ -3,12 +3,13 @@ import sqlite3
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+
 def load_data(db_path):
-    # Connect to the SQLite database and fetch the data
     conn = sqlite3.connect(db_path)
     myData = pd.read_sql_query("SELECT * FROM patients", conn)
     conn.close()
     return myData
+
 
 def analyze_age_heart_disease_relationship(db_path):
     # Load the data
@@ -30,6 +31,7 @@ def analyze_age_heart_disease_relationship(db_path):
     plt.xlabel('Age Group')
     plt.ylabel('Average Heart Disease Occurrence (1 = Yes, 0 = No)')
     plt.show()
+
 
 # Example execution
 db_path = 'C:/Users/jwweg/PycharmProjects/heart_disease_app/patients.db'

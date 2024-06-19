@@ -3,12 +3,11 @@ from sqlite3 import Error
 from database.connection import create_connection
 from database.connection import close_connection
 
-# Define the database file path
 db_file = "C:/Users/jwweg/PycharmProjects/heart_disease_app/patients.db"
 
 
 def create_table(conn):
-    """ Create a table in the provided database connection """
+
     try:
         cursor = conn.cursor()
         cursor.execute("""
@@ -30,18 +29,18 @@ def create_table(conn):
                 target INTEGER NOT NULL
             );
         """)
-        conn.commit()  # Ensure changes are committed to the database
+        conn.commit()
         print("Table has been created successfully.")
     except Error as error:
         print("Failed to create table:", error)
 
 
 def main():
-    # Create a database connection
+
     conn = create_connection(db_file)
     if conn is not None:
         create_table(conn)
-        # Close the database connection
+
         close_connection(conn)
     else:
         print("Error! cannot create the database connection.")
