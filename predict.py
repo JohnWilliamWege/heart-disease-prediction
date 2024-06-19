@@ -44,19 +44,33 @@ def app():
             return False
 
     st.title("Heart Disease Prediction")
-    age = st.number_input("Age", min_value=1, max_value=120, value=67)
+    age = st.number_input("Age", min_value=1, max_value=120, value=60)
     sex = st.selectbox("Sex", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
     chest_pain_type = st.selectbox("Chest Pain Type", options=list(chest_pain_type_dict.keys()), format_func=lambda x: chest_pain_type_dict[x])
     resting_blood_pressure = st.number_input("Resting Blood Pressure", min_value=0, max_value=300, value=125)
-    cholesterol = st.number_input("Cholesterol", min_value=0, max_value=1000, value=254)
+    cholesterol = st.number_input("Cholesterol", min_value=0, max_value=1000, value=270)
     fasting_blood_sugar = st.selectbox("Fasting Blood Sugar > 120 mg/dl", options=[0, 1])
     rest_ecg = st.selectbox("Resting ECG", options=list(rest_ecg_dict.keys()), format_func=lambda x: rest_ecg_dict[x])
-    max_heart_rate = st.number_input("Max Heart Rate Achieved", min_value=0, max_value=300, value=163)
+    max_heart_rate = st.number_input("Max Heart Rate Achieved", min_value=0, max_value=300, value=80)
     exercise_induced_angina = st.selectbox("Exercise Induced Angina", options=[0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
     st_depression = st.number_input("ST Depression", min_value=0.0, max_value=10.0, value=0.2, step=0.1)
     st_slope = st.selectbox("ST Slope", options=list(st_slope_dict.keys()), format_func=lambda x: st_slope_dict[x])
-    num_major_vessels = st.number_input("Number of Major Vessels", min_value=0, max_value=4, value=2)
+    num_major_vessels = st.number_input("Number of Major Vessels", min_value=0, max_value=4, value=0)
     thalassemia = st.selectbox("Thalassemia", options=list(thalassemia_dict.keys()), format_func=lambda x: thalassemia_dict[x])
+
+    def generate_report(probability):
+        if probability > 0.5:
+            return (
+                "The patient is at risk of heart disease with a probability of "
+                f"{probability:.2f} ({probability * 100:.2f}%). It is strongly recommended "
+                "that the patient seeks further testing and consultation with a healthcare professional."
+            )
+        else:
+            return (
+                "The patient has a low probability of heart disease with a probability of "
+                f"{probability:.2f} ({probability * 100:.2f}%). Regular check-ups and a healthy lifestyle "
+                "are recommended to maintain good heart health."
+            )
 
     if st.button("Predict"):
         example_patient = {
@@ -88,8 +102,13 @@ def app():
                 probability = best_model.predict_proba(processed_patient_data)[:, 1][0]
                 st.write("Prediction Probability:", probability)
                 st.write(f"Probability of heart disease: {probability:.4f} ({probability * 100:.2f}%)")
+                report = generate_report(probability)
+                st.write(report)
             except ValueError as e:
                 st.write(f"Error in prediction: {e}")
+
+
+
 
 if __name__ == "__main__":
     app()
