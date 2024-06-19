@@ -2,7 +2,6 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import joblib
-import sqlite3
 
 def app():
     # Load the model, encoders, and min-max values
@@ -11,6 +10,12 @@ def app():
     label_encoders = joblib.load("C:/Users/jwweg/PycharmProjects/heart_disease_app/utilities/label_encoders.pkl")
     min_max_values = pd.read_csv("C:/Users/jwweg/PycharmProjects/heart_disease_app/utilities/min_max_values.csv",
                                  index_col=0)
+
+    # Define dictionaries for human-readable labels
+    chest_pain_type_dict = {0: "Typical Angina", 1: "Atypical Angina", 2: "Non-Anginal Pain", 3: "Asymptomatic"}
+    rest_ecg_dict = {0: "Normal", 1: "Having ST-T wave abnormality", 2: "Showing probable or definite left ventricular hypertrophy"}
+    st_slope_dict = {0: "Upsloping", 1: "Flat", 2: "Downsloping"}
+    thalassemia_dict = {0: "Normal", 1: "Fixed Defect", 2: "Reversible Defect"}
 
     # Define function to preprocess patient data
     def preprocess_patient_data(patient_data, label_encoders, min_max_values):
@@ -41,17 +46,17 @@ def app():
     st.title("Heart Disease Prediction")
     age = st.number_input("Age", min_value=1, max_value=120, value=67)
     sex = st.selectbox("Sex", options=[0, 1], format_func=lambda x: "Female" if x == 0 else "Male")
-    chest_pain_type = st.number_input("Chest Pain Type", min_value=0, max_value=3, value=0)
+    chest_pain_type = st.selectbox("Chest Pain Type", options=list(chest_pain_type_dict.keys()), format_func=lambda x: chest_pain_type_dict[x])
     resting_blood_pressure = st.number_input("Resting Blood Pressure", min_value=0, max_value=300, value=125)
     cholesterol = st.number_input("Cholesterol", min_value=0, max_value=1000, value=254)
     fasting_blood_sugar = st.selectbox("Fasting Blood Sugar > 120 mg/dl", options=[0, 1])
-    rest_ecg = st.number_input("Resting ECG", min_value=0, max_value=2, value=1)
+    rest_ecg = st.selectbox("Resting ECG", options=list(rest_ecg_dict.keys()), format_func=lambda x: rest_ecg_dict[x])
     max_heart_rate = st.number_input("Max Heart Rate Achieved", min_value=0, max_value=300, value=163)
     exercise_induced_angina = st.selectbox("Exercise Induced Angina", options=[0, 1], format_func=lambda x: "No" if x == 0 else "Yes")
     st_depression = st.number_input("ST Depression", min_value=0.0, max_value=10.0, value=0.2, step=0.1)
-    st_slope = st.number_input("ST Slope", min_value=0, max_value=2, value=1)
+    st_slope = st.selectbox("ST Slope", options=list(st_slope_dict.keys()), format_func=lambda x: st_slope_dict[x])
     num_major_vessels = st.number_input("Number of Major Vessels", min_value=0, max_value=4, value=2)
-    thalassemia = st.number_input("Thalassemia", min_value=0, max_value=3, value=3)
+    thalassemia = st.selectbox("Thalassemia", options=list(thalassemia_dict.keys()), format_func=lambda x: thalassemia_dict[x])
 
     if st.button("Predict"):
         example_patient = {
@@ -85,3 +90,6 @@ def app():
                 st.write(f"Probability of heart disease: {probability:.4f} ({probability * 100:.2f}%)")
             except ValueError as e:
                 st.write(f"Error in prediction: {e}")
+
+if __name__ == "__main__":
+    app()
